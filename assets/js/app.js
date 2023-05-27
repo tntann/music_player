@@ -16,6 +16,9 @@ const randomBtn = $('.btn-random')
 const repeatBtn = $('.btn-repeat')
 const playlist = $('.playlist')
 
+const timeCurrent = $(".ctrl__progress-time--current");
+const timeDuration = $(".ctrl__progress-time--duration");
+
 
 
 const app = {
@@ -165,13 +168,62 @@ const app = {
             cdThumAnimate.pause()
         }
 
-        // Khi tien do bai hat thay doi
-        audio.ontimeupdate = function() {
-            if (audio.duration) {
-                const progressPercent = Math.floor(audio.currentTime / audio.duration * 100)
-                progress.value = progressPercent
-            }
-        }
+        // Theo dõi tiến độ bài hát
+        audio.addEventListener("timeupdate", function () {
+            // method duration trả về độ dài của audio/video
+            const audioDuration = audio.duration;
+            //   console.log(audio.duration);
+            //
+                if (!isNaN(audioDuration)) {
+                // audio.currentTime trả về thời gian đang chạy của audio/video
+                const progressPercent = (audio.currentTime / audio.duration) * 100; // Tính phần trăm chạy của bài hát
+        
+                // gán phần trăm bài hát vào thanh progress
+                progress.value = progressPercent;
+                }
+             /* ========== Hiển thị thời gian hiện tại của bài hát ========== */
+            // Trả về số phút hiện tại của audio/video
+            let currentMinutes = Math.floor(audio.currentTime / 60);
+            // Trả về số giây hiện tại của audio/video
+            let currentSeconds = Math.floor(audio.currentTime - currentMinutes * 60);
+  
+                if (currentMinutes < 10) {
+                currentMinutes = `0${currentMinutes}`;
+                }
+  
+                if (currentSeconds < 10) {
+                currentSeconds = `0${currentSeconds}`;
+                }
+  
+        timeCurrent.innerText = `${currentMinutes}:${currentSeconds}`;
+      });
+
+      /* ========== Hiển thị thời gian bài hát ========== */
+        audio.addEventListener("loadedmetadata", function () {
+        // Trả về số phút của audio/video
+            let durationMinutes = Math.floor(audio.duration / 60);
+        // Trả về số giây của audio/video
+            let durationSeconds = Math.floor(audio.duration - durationMinutes * 60);
+  
+                if (durationMinutes < 10) {
+                durationMinutes = `0${durationMinutes}`;
+                }
+  
+                if (durationSeconds < 10) {
+                durationSeconds = `0${durationSeconds}`;
+                }
+  
+        timeDuration.innerText = `${durationMinutes}:${durationSeconds}`;
+      });
+  
+
+        // // Khi tien do bai hat thay doi
+        // audio.ontimeupdate = function() {
+        //     if (audio.duration) {
+        //         const progressPercent = Math.floor(audio.currentTime / audio.duration * 100)
+        //         progress.value = progressPercent
+        //     }
+        // }
 
         // Xu ly khi tua 
         progress.oninput = function(e) {
