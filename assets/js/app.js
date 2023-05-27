@@ -174,7 +174,7 @@ const app = {
         }
 
         // Xu ly khi tua 
-        progress.onchange = function(e) {
+        progress.oninput = function(e) {
             const seekTime = audio.duration / 100 * e.target.value;
             audio.currentTime = seekTime
         }
